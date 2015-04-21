@@ -22,7 +22,8 @@
                 '<ul class="angular-autocomplete" ng-if="isOpen()">' +
                 '   <li ng-repeat="match in matches" ' +
                 '      ng-class="{ selected: selectedIndex == $index }" ' +
-                '      ng-click="select($index)">{{ match }}</li>' +
+                // use Mousedown to stay clear of input losing focus when suggestion is clicked
+                '      ng-mousedown="select($index)">{{ match }}</li>' +
                 '</ul>';
 
             var HOT_KEYS = [9, 13, 27, 38, 40];
