@@ -1,0 +1,28 @@
+{
+  "name": "angular-autocomplete",
+  "main": "angular-autocomplete.js",
+  "version": "0.0.1",
+  "homepage": "https://github.com/myplanetdigital/angular-autocomplete",
+  "authors": [
+    "Shanly Suepaul <shanly.s@myplanet.com>",
+    "Ufuk Kayserilioglu <ufuk.k@myplanet.com>"
+  ],
+  "description": "Lightweight Autocomplete for Angular",
+  "moduleType": [
+    "amd",
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "angular",
+    "autocomplete"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
