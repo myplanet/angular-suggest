@@ -16,8 +16,8 @@
 }
 
 .angular-autocomplete > ._suggestions > ._suggestion {
-    padding: 9px 15px 9px 15px;
-    border-bottom: 1px dotted @borderColor;
+    padding: 6px 15px;
+    border-bottom: 1px dotted #ddd;
     cursor: pointer;
 }
 
