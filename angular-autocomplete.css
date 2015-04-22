@@ -16,13 +16,8 @@
 }
 
 .angular-autocomplete > ._suggestions > ._suggestion {
-    padding: 6px 15px;
-    border-bottom: 1px dotted #ddd;
+    padding: 10px 15px;
     cursor: pointer;
-}
-
-.angular-autocomplete > ._suggestions > ._suggestion:last-child {
-    border: 0;
 }
 
 .angular-autocomplete > ._suggestions > ._suggestion.-selected {
