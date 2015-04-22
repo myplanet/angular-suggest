@@ -31,20 +31,11 @@
             return {
                 restrict: 'A',
                 require: 'ngModel',
-                link: function (originalScope, $element, $attributes, ngModel) {
-                    // model setter executed upon match selection
-                    var $setModelValue = $parse($attributes.ngModel).assign;
-
-                    // suggestion fetch function
-                    var fetchSuggestions = originalScope.$eval($attributes.autocomplete);
-
-                    // create a child scope for the directive so that we are not
-                    // polluting original scope with matches, query etc.
-                    var $scope = originalScope.$new();
-                    originalScope.$on('$destroy', function () {
-                        $scope.$destroy();
-                    });
-
+                scope: {
+                    onSuggestionSelected: '&',
+                    autocomplete: '='
+                },
+                link: function ($scope, $element, $attributes, ngModel) {
                     var resetMatches = function () {
                         $scope.matches = [];
                         $scope.selectedIndex = -1;
@@ -55,17 +46,21 @@
                     };
 
                     $scope.select = function (selectedIndex) {
-                        //called from within the $digest() cycle
-                        $setModelValue(originalScope, $scope.matches[selectedIndex]);
-                        resetMatches();
+                        // called from within the $digest() cycle
+                        var selectedValue = $scope.matches[selectedIndex];
+                        ngModel.$setViewValue(selectedValue);
+                        ngModel.$render();
 
-                        // @todo Notify observer of selection
+                        // notify observer of selection
+                        $scope.onSuggestionSelected();
 
-                        //return focus to the input element if a match was selected via a mouse click event
-                        // use timeout to avoid $rootScope:inprog error
+                        // return focus to the input element if a match was selected via a mouse click event
+                        // use timeout to ensure that we reset after all ngmodel related
+                        // changes are handled
                         $timeout(function () {
+                            resetMatches();
                             $element[0].focus();
-                        }, 0, false);
+                        }, 0);
                     };
 
                     $scope.selectNext = function () {
@@ -85,7 +80,7 @@
                     ngModel.$parsers.unshift(function (inputValue) {
                         // @todo: add debouncing
                         // 2. Fetch suggestions
-                        fetchSuggestions(inputValue).then(function (suggestions) {
+                        $scope.autocomplete(inputValue).then(function (suggestions) {
                             // 3. Present suggestions
                             $scope.matches = suggestions;
                         });
