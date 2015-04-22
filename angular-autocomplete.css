@@ -1,0 +1,34 @@
+.angular-autocomplete {
+    color: #333;
+    font: normal 14px sans-serif;
+    border: 1px solid #ddd;
+    display: inline-block;
+    background: #fff;
+    min-width: 100%;
+    max-width: 100%;
+}
+
+
+.angular-autocomplete > ._suggestions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.angular-autocomplete > ._suggestions > ._suggestion {
+    padding: 9px 15px 9px 15px;
+    border-bottom: 1px dotted @borderColor;
+    cursor: pointer;
+}
+
+.angular-autocomplete > ._suggestions > ._suggestion:last-child {
+    border: 0;
+}
+
+.angular-autocomplete > ._suggestions > ._suggestion.-selected {
+    background: #e0e0e0;
+}
+
+.angular-autocomplete > ._suggestions > ._suggestion:hover {
+    background: #eee;
+}
