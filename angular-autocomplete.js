@@ -18,8 +18,11 @@
     return angular.module('mp.autocomplete', []).directive('autocomplete', [
         '$window', '$q', '$compile', '$parse', '$timeout',
         function($window, $q, $compile, $parse, $timeout) {
+            // Introduce custom elements for IE8
+            $window.document.createElement('autocomplete');
+
             var TEMPLATE = '' +
-                '<div class="angular-autocomplete" ng-if="isOpen()">' +
+                '<div class="angular-autocomplete" ng-show="isOpen()">' +
                 '  <ul class="_suggestions">' +
                 '    <li ng-repeat="match in matches" ' +
                 '        class="_suggestion"' +
@@ -32,12 +35,15 @@
             var HOT_KEYS = [9, 13, 27, 38, 40];
 
             return {
-                restrict: 'A',
+                restrict: 'E',
+                template: TEMPLATE,
+                replace: true,
                 require: 'ngModel',
                 scope: {
-                    onSuggestionSelected: '&',
-                    autocomplete: '='
+                    onSuggestionSelected: '=',
+                    querySuggestions: '='
                 },
+
                 link: function ($scope, $element, $attributes, ngModel) {
                     var resetMatches = function () {
                         $scope.matches = [];
@@ -80,10 +86,10 @@
                     resetMatches();
 
                     // 1. Watch model for changes
-                    ngModel.$parsers.unshift(function (inputValue) {
+                    ngModel.$formatters.unshift(function (inputValue) {
                         // @todo: add debouncing
                         // 2. Fetch suggestions
-                        $scope.autocomplete(inputValue).then(function (suggestions) {
+                        $scope.querySuggestions(inputValue).then(function (suggestions) {
                             // 3. Present suggestions
                             $scope.matches = suggestions;
                         });
@@ -122,9 +128,6 @@
                             resetMatches();
                         });
                     });
-
-                    var $template = $compile(TEMPLATE)($scope);
-                    $element.after($template);
                 }
             };
         }
