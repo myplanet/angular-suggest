@@ -8,6 +8,9 @@
     max-width: 100%;
 }
 
+.angular-autocomplete:focus {
+    outline: none;
+}
 
 .angular-autocomplete > ._suggestions {
     list-style: none;
