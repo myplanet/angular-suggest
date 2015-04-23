@@ -2,7 +2,7 @@
 Autocomplete directive for Angular that supports configurable event handling and templates.
 
 ## Usage example:
-```javascript
+```html
 <autocomplete ng-model="data" query-suggestions="autocompleteQuery" on-selection-complete="onSelectionComplete"></autocomplete>
 ```
 
