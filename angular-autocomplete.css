@@ -23,7 +23,3 @@
 .angular-autocomplete > ._suggestions > ._suggestion.-selected {
     background: #e0e0e0;
 }
-
-.angular-autocomplete > ._suggestions > ._suggestion:hover {
-    background: #eee;
-}
