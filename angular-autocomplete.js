@@ -64,19 +64,13 @@
                         ngModel.$setViewValue(selectedValue);
                         ngModel.$render();
 
+                        resetMatches();
+
                         // notify observer of selection complete
                         // this is a good chance to restore focus on whatever element that triggered autocomplete
                         if ($scope.onSelectionComplete) {
                             $scope.onSelectionComplete(selectedValue);
                         }
-
-                        // return focus to the input element if a match was selected via a mouse click event
-                        // use timeout to ensure that we reset after all ngmodel related
-                        // changes are handled
-                        $timeout(function () {
-                            resetMatches();
-                            $element[0].focus();
-                        }, 0);
                     };
 
                     $scope.selectNext = function () {
@@ -136,20 +130,22 @@
                                 $scope.select($scope.selectedIndex);
                             } else if (evt.which === 27) { // Esc
                                 // 5. Handle cancelling of the dialog
+                                resetMatches();
+                                evt.stopPropagation();
+
                                 // null indicating no value is selected, again a good chance to restore focus on whatever element that triggered autocomplete
                                 if ($scope.onSelectionComplete) {
                                     $scope.onSelectionComplete(null);
                                 }
-
-                                resetMatches();
-                                evt.stopPropagation();
                             }
                         });
                     }).bind('blur', function () {
-                        // Close the autocomplete dialog when the element loses focus
-                        $scope.$apply(function () {
-                            resetMatches();
-                        });
+                        if ($scope.matches.length) {
+                            // Close the autocomplete dialog when the element loses focus
+                            $scope.$apply(function () {
+                                resetMatches();
+                            });
+                        }
                     });
                 }
             };
