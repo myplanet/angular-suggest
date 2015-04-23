@@ -22,13 +22,14 @@
             $window.document.createElement('autocomplete');
 
             var TEMPLATE = '' +
-                '<div class="angular-autocomplete" ng-show="isOpen()">' +
+                '<div class="angular-autocomplete" ng-show="isOpen()" tabindex="0">' +
                 '  <ul class="_suggestions">' +
                 '    <li ng-repeat="match in matches" ' +
                 '        class="_suggestion"' +
                 '        ng-class="{ \'-selected\': selectedIndex == $index }" ' +
                 // use mousedown to stay clear of input losing focus when suggestion is clicked
-                '        ng-mousedown="select($index)">{{ match }}</li>' +
+                '        ng-mousedown="select($index)" ' +
+                '        ng-mousemove="setSelectedIndex($index)">{{ match }}</li>' +
                 '  </ul>' +
                 '</div>';
 
@@ -40,11 +41,14 @@
                 replace: true,
                 require: 'ngModel',
                 scope: {
-                    onSuggestionSelected: '=',
+                    onSelectionComplete: '=',
                     querySuggestions: '='
                 },
 
                 link: function ($scope, $element, $attributes, ngModel) {
+                    $scope.matches = []
+                    $scope.selectedIndex = -1;
+
                     var resetMatches = function () {
                         $scope.matches = [];
                         $scope.selectedIndex = -1;
@@ -60,8 +64,11 @@
                         ngModel.$setViewValue(selectedValue);
                         ngModel.$render();
 
-                        // notify observer of selection
-                        $scope.onSuggestionSelected();
+                        // notify observer of selection complete
+                        // this is a good chance to restore focus on whatever element that triggered autocomplete
+                        if ($scope.onSelectionComplete) {
+                            $scope.onSelectionComplete(selectedValue);
+                        }
 
                         // return focus to the input element if a match was selected via a mouse click event
                         // use timeout to ensure that we reset after all ngmodel related
@@ -82,6 +89,12 @@
                                                 : $scope.matches.length) - 1;
                     };
 
+                    $scope.setSelectedIndex = function(index) {
+                        if ($scope.selectedIndex !== index) {
+                            $scope.selectedIndex = index;
+                        }
+                    };
+
                     // 0. Initialize to empty state
                     resetMatches();
 
@@ -93,6 +106,11 @@
                             // 3. Present suggestions
                             $scope.matches = suggestions;
                         });
+                    });
+
+                    $scope.$on('autocompleteFocus', function () {
+                        $element[0].focus();
+                        $scope.selectedIndex = 0;
                     });
 
                     // 4. Handle mouse selection or keypresses
@@ -117,7 +135,12 @@
                             } else if (evt.which === 13 || evt.which === 9) { // Enter or Tab
                                 $scope.select($scope.selectedIndex);
                             } else if (evt.which === 27) { // Esc
-                                // 6. Handle cancelling of the dialog
+                                // 5. Handle cancelling of the dialog
+                                // null indicating no value is selected, again a good chance to restore focus on whatever element that triggered autocomplete
+                                if ($scope.onSelectionComplete) {
+                                    $scope.onSelectionComplete(null);
+                                }
+
                                 resetMatches();
                                 evt.stopPropagation();
                             }
