@@ -45,22 +45,22 @@
                     querySuggestions: '='
                 },
 
-                link: function ($scope, $element, $attributes, ngModel) {
-                    $scope.matches = []
-                    $scope.selectedIndex = -1;
+                link: function (scope, element, attributes, ngModel) {
+                    scope.matches = []
+                    scope.selectedIndex = -1;
 
                     var resetMatches = function () {
-                        $scope.matches = [];
-                        $scope.selectedIndex = -1;
+                        scope.matches = [];
+                        scope.selectedIndex = -1;
                     };
 
-                    $scope.isOpen = function () {
-                        return $scope.matches.length > 0;
+                    scope.isOpen = function () {
+                        return scope.matches.length > 0;
                     };
 
-                    $scope.select = function (selectedIndex) {
+                    scope.select = function (selectedIndex) {
                         // called from within the $digest() cycle
-                        var selectedValue = $scope.matches[selectedIndex];
+                        var selectedValue = scope.matches[selectedIndex];
                         ngModel.$setViewValue(selectedValue);
                         ngModel.$render();
 
@@ -68,24 +68,24 @@
 
                         // notify observer of selection complete
                         // this is a good chance to restore focus on whatever element that triggered autocomplete
-                        if ($scope.onSelectionComplete) {
-                            $scope.onSelectionComplete({ value: selectedValue })();
+                        if (scope.onSelectionComplete) {
+                            scope.onSelectionComplete({ value: selectedValue })();
                         }
                     };
 
-                    $scope.selectNext = function () {
-                        $scope.selectedIndex = ($scope.selectedIndex + 1) % $scope.matches.length;
+                    scope.selectNext = function () {
+                        scope.selectedIndex = (scope.selectedIndex + 1) % scope.matches.length;
                     };
 
-                    $scope.selectPrev = function () {
-                        $scope.selectedIndex = ($scope.selectedIndex > 0
-                                                ? $scope.selectedIndex
-                                                : $scope.matches.length) - 1;
+                    scope.selectPrev = function () {
+                        scope.selectedIndex = (scope.selectedIndex > 0
+                                                ? scope.selectedIndex
+                                                : scope.matches.length) - 1;
                     };
 
-                    $scope.setSelectedIndex = function(index) {
-                        if ($scope.selectedIndex !== index) {
-                            $scope.selectedIndex = index;
+                    scope.setSelectedIndex = function(index) {
+                        if (scope.selectedIndex !== index) {
+                            scope.selectedIndex = index;
                         }
                     };
 
@@ -96,53 +96,53 @@
                     ngModel.$formatters.unshift(function (inputValue) {
                         // @todo: add debouncing
                         // 2. Fetch suggestions
-                        $scope.querySuggestions(inputValue).then(function (suggestions) {
+                        scope.querySuggestions(inputValue).then(function (suggestions) {
                             // 3. Present suggestions
-                            $scope.matches = suggestions;
+                            scope.matches = suggestions;
                         });
                     });
 
-                    $scope.$on('autocompleteFocus', function () {
-                        $element[0].focus();
-                        $scope.selectedIndex = 0;
+                    scope.$on('autocompleteFocus', function () {
+                        element[0].focus();
+                        scope.selectedIndex = 0;
                     });
 
                     // 4. Handle mouse selection or keypresses
-                    $element.bind('keydown', function (evt) {
+                    element.bind('keydown', function (evt) {
                         // we have matches and an "interesting" key was pressed
-                        if ($scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
+                        if (scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
                             return;
                         }
 
                         // if there's nothing selected and enter/tab is hit, don't do anything
-                        if ($scope.selectedIndex == -1 && (evt.which === 13 || evt.which === 9)) {
+                        if (scope.selectedIndex == -1 && (evt.which === 13 || evt.which === 9)) {
                             return;
                         }
 
                         evt.preventDefault();
 
-                        $scope.$apply(function () {
+                        scope.$apply(function () {
                             if (evt.which === 40) { // Down Arrow
-                                $scope.selectNext();
+                                scope.selectNext();
                             } else if (evt.which === 38) { // Up Arrow
-                                $scope.selectPrev();
+                                scope.selectPrev();
                             } else if (evt.which === 13 || evt.which === 9) { // Enter or Tab
-                                $scope.select($scope.selectedIndex);
+                                scope.select(scope.selectedIndex);
                             } else if (evt.which === 27) { // Esc
                                 // 5. Handle cancelling of the dialog
                                 resetMatches();
                                 evt.stopPropagation();
 
                                 // null indicating no value is selected, again a good chance to restore focus on whatever element that triggered autocomplete
-                                if ($scope.onSelectionComplete) {
-                                    $scope.onSelectionComplete({ value: null })();
+                                if (scope.onSelectionComplete) {
+                                    scope.onSelectionComplete({ value: null })();
                                 }
                             }
                         });
                     }).bind('blur', function () {
-                        if ($scope.matches.length) {
+                        if (scope.matches.length) {
                             // Close the autocomplete dialog when the element loses focus
-                            $scope.$apply(function () {
+                            scope.$apply(function () {
                                 resetMatches();
                             });
                         }
