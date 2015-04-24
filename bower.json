@@ -1,11 +1,12 @@
 {
   "name": "angular-autocomplete",
   "main": "angular-autocomplete.js",
-  "version": "0.0.2",
+  "version": "0.0.0",
   "homepage": "https://github.com/myplanetdigital/angular-autocomplete",
   "authors": [
     "Shanly Suepaul <shanly.s@myplanet.com>",
-    "Ufuk Kayserilioglu <ufuk.k@myplanet.com>"
+    "Ufuk Kayserilioglu <ufuk.k@myplanet.com>",
+    "Dongyu Su <rex.s@myplanet.com>"
   ],
   "description": "Lightweight Autocomplete for Angular",
   "moduleType": [
