@@ -69,7 +69,7 @@
                         // notify observer of selection complete
                         // this is a good chance to restore focus on whatever element that triggered autocomplete
                         if (scope.onSelectionComplete) {
-                            scope.onSelectionComplete({ value: selectedValue })();
+                            scope.onSelectionComplete()(selectedValue);
                         }
                     };
 
@@ -135,7 +135,7 @@
 
                                 // null indicating no value is selected, again a good chance to restore focus on whatever element that triggered autocomplete
                                 if (scope.onSelectionComplete) {
-                                    scope.onSelectionComplete({ value: null })();
+                                    scope.onSelectionComplete()(null);
                                 }
                             }
                         });
