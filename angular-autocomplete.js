@@ -41,7 +41,7 @@
                 replace: true,
                 require: 'ngModel',
                 scope: {
-                    onSelectionComplete: '=',
+                    onSelectionComplete: '&',
                     querySuggestions: '='
                 },
 
@@ -69,7 +69,7 @@
                         // notify observer of selection complete
                         // this is a good chance to restore focus on whatever element that triggered autocomplete
                         if ($scope.onSelectionComplete) {
-                            $scope.onSelectionComplete(selectedValue);
+                            $scope.onSelectionComplete({ value: selectedValue })();
                         }
                     };
 
@@ -135,7 +135,7 @@
 
                                 // null indicating no value is selected, again a good chance to restore focus on whatever element that triggered autocomplete
                                 if ($scope.onSelectionComplete) {
-                                    $scope.onSelectionComplete(null);
+                                    $scope.onSelectionComplete({ value: null })();
                                 }
                             }
                         });
