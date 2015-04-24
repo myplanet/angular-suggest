@@ -8,6 +8,9 @@
     max-width: 100%;
 }
 
+.angular-autocomplete:focus {
+    outline: none;
+}
 
 .angular-autocomplete > ._suggestions {
     list-style: none;
@@ -22,8 +25,4 @@
 
 .angular-autocomplete > ._suggestions > ._suggestion.-selected {
     background: #e0e0e0;
-}
-
-.angular-autocomplete > ._suggestions > ._suggestion:hover {
-    background: #eee;
 }
