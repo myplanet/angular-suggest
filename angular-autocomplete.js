@@ -29,7 +29,7 @@
                 '        ng-class="{ \'-selected\': selectedIndex == $index }" ' +
                 // use mousedown to stay clear of input losing focus when suggestion is clicked
                 '        ng-mousedown="select($index)" ' +
-                '        ng-mousemove="setSelectedIndex($index)">{{ match }}</li>' +
+                '        ng-mousemove="setSelectedIndex($index)">{{ render({ value: match }) }}</li>' +
                 '  </ul>' +
                 '</div>';
 
@@ -42,7 +42,8 @@
                 require: 'ngModel',
                 scope: {
                     onSelectionComplete: '&',
-                    querySuggestions: '='
+                    render: '&',
+                    query: '&'
                 },
 
                 link: function (scope, element, attributes, ngModel) {
@@ -61,7 +62,7 @@
                     scope.select = function (selectedIndex) {
                         // called from within the $digest() cycle
                         var selectedValue = scope.matches[selectedIndex];
-                        ngModel.$setViewValue(selectedValue);
+                        ngModel.$setViewValue(scope.render({ value: selectedValue }));
                         ngModel.$render();
 
                         resetMatches();
@@ -69,7 +70,7 @@
                         // notify observer of selection complete
                         // this is a good chance to restore focus on whatever element that triggered autocomplete
                         if (scope.onSelectionComplete) {
-                            scope.onSelectionComplete()(selectedValue);
+                            scope.onSelectionComplete({ value: selectedValue });
                         }
                     };
 
@@ -96,7 +97,7 @@
                     ngModel.$formatters.unshift(function (inputValue) {
                         // @todo: add debouncing
                         // 2. Fetch suggestions
-                        scope.querySuggestions(inputValue).then(function (suggestions) {
+                        scope.query({ input: inputValue }).then(function (suggestions) {
                             // 3. Present suggestions
                             scope.matches = suggestions;
                         });
@@ -135,7 +136,7 @@
 
                                 // null indicating no value is selected, again a good chance to restore focus on whatever element that triggered autocomplete
                                 if (scope.onSelectionComplete) {
-                                    scope.onSelectionComplete()(null);
+                                    scope.onSelectionComplete({ value: null });
                                 }
                             }
                         });
