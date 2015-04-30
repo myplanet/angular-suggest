@@ -45,7 +45,6 @@
                 restrict: 'E',
                 template: TEMPLATE,
                 replace: true,
-                require: 'ngModel',
                 scope: {
                     inputElement: '=',
                     onSelectionComplete: '&',
@@ -53,7 +52,7 @@
                     query: '&'
                 },
 
-                link: function (scope, element, attributes, ngModel) {
+                link: function (scope, element, attributes) {
                     scope.matches = []
                     scope.selectedIndex = -1;
 
@@ -69,16 +68,11 @@
                     scope.select = function (selectedIndex) {
                         // called from within the $digest() cycle
                         var selectedValue = scope.matches[selectedIndex];
-                        ngModel.$setViewValue(scope.render({ value: selectedValue }));
-                        ngModel.$render();
 
                         resetMatches();
 
                         // notify observer of selection complete
-                        // this is a good chance to restore focus on whatever element that triggered autocomplete
-                        if (scope.onSelectionComplete) {
-                            scope.onSelectionComplete({ value: selectedValue });
-                        }
+                        scope.onSelectionComplete({ value: selectedValue });
                     };
 
                     scope.selectNext = function () {
@@ -101,7 +95,7 @@
                     resetMatches();
 
                     // 1. Watch model for changes
-                    ngModel.$formatters.unshift(function (inputValue) {
+                    scope.$parent.$watch(attributes.queryText, function (inputValue) {
                         // @todo: add debouncing
                         // 2. Fetch suggestions
                         scope.query({ input: inputValue }).then(function (suggestions) {
