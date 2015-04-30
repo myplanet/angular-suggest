@@ -117,6 +117,7 @@
                                 // 3. Present suggestions
                                 if (latestQuery === currentQuery) {
                                     scope.matches = suggestions;
+                                    scope.selectedIndex = suggestions.length ? 0 : -1;
                                 }
                             });
 
