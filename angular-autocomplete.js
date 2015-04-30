@@ -22,7 +22,7 @@
             $window.document.createElement('autocomplete');
 
             var TEMPLATE = '' +
-                '<div class="angular-autocomplete" ng-show="isOpen()" tabindex="0">' +
+                '<div class="angular-autocomplete" ng-show="isOpen()">' +
                 '  <ul class="_suggestions">' +
                 '    <li ng-repeat="match in matches" ' +
                 '        class="_suggestion"' +
@@ -47,6 +47,7 @@
                 replace: true,
                 require: 'ngModel',
                 scope: {
+                    inputElement: '=',
                     onSelectionComplete: '&',
                     render: '&',
                     query: '&'
@@ -109,13 +110,8 @@
                         });
                     });
 
-                    scope.$on('autocompleteFocus', function () {
-                        element[0].focus();
-                        scope.selectedIndex = 0;
-                    });
-
                     // 4. Handle mouse selection or keypresses
-                    element.bind('keydown', function (evt) {
+                    scope.inputElement.bind('keydown', function (evt) {
                         // we have matches and an "interesting" key was pressed
                         if (scope.matches.length === 0 || HOT_KEYS.indexOf(evt.which) === -1) {
                             return;
@@ -129,6 +125,10 @@
                         evt.preventDefault();
 
                         scope.$apply(function () {
+                            if (!scope.isOpen()) {
+                                return;
+                            }
+
                             if (evt.which === 40) { // Down Arrow
                                 scope.selectNext();
                             } else if (evt.which === 38) { // Up Arrow
@@ -139,11 +139,6 @@
                                 // 5. Handle cancelling of the dialog
                                 resetMatches();
                                 evt.stopPropagation();
-
-                                // null indicating no value is selected, again a good chance to restore focus on whatever element that triggered autocomplete
-                                if (scope.onSelectionComplete) {
-                                    scope.onSelectionComplete({ value: null });
-                                }
                             }
                         });
                     }).bind('blur', function () {
