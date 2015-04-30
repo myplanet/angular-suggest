@@ -94,14 +94,30 @@
                     // 0. Initialize to empty state
                     resetMatches();
 
+                    var latestQuery = null;
+
                     // 1. Watch model for changes
-                    scope.$parent.$watch(attributes.queryText, function (inputValue) {
-                        // @todo: add debouncing
-                        // 2. Fetch suggestions
-                        scope.query({ input: inputValue }).then(function (suggestions) {
-                            // 3. Present suggestions
-                            scope.matches = suggestions;
-                        });
+                    scope.$parent.$watch(attributes.queryText, function (queryText) {
+                        var inputValue = queryText.replace(/^\s+/, '').replace(/\s+$/, '');
+
+                        var currentQuery =
+                            $timeout(function () {
+                                return inputValue;
+                            }, 350)
+                            .then(function (v) {
+                                // 2. Fetch suggestions
+                                if (latestQuery === currentQuery) {
+                                    return scope.query({ input: v });
+                                }
+                            })
+                            .then(function (suggestions) {
+                                // 3. Present suggestions
+                                if (latestQuery === currentQuery) {
+                                    scope.matches = suggestions;
+                                }
+                            });
+
+                        latestQuery = currentQuery;
                     });
 
                     // 4. Handle mouse selection or keypresses
