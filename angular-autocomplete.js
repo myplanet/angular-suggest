@@ -98,6 +98,9 @@
 
                     // 1. Watch model for changes
                     scope.$parent.$watch(attributes.queryText, function (queryText) {
+                        // clear out existing displayed suggestions
+                        resetMatches();
+
                         var inputValue = queryText.replace(/^\s+/, '').replace(/\s+$/, '');
 
                         var currentQuery =
