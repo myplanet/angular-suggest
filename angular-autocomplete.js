@@ -33,7 +33,13 @@
                 '  </ul>' +
                 '</div>';
 
-            var HOT_KEYS = [9, 13, 27, 38, 40];
+            var HOT_KEYS = [
+                9,      // tab
+                13,     // enter
+                27,     // esc
+                38,     // up arrow
+                40      // down arrow
+            ];
 
             return {
                 restrict: 'E',
