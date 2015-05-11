@@ -29,7 +29,7 @@
                 '        ng-class="{ \'-selected\': selectedIndex == $index }" ' +
                 // use mousedown to stay clear of input losing focus when suggestion is clicked
                 '        ng-mousedown="handleSelect($index, $event)" ' +
-                '        ng-mousemove="setSelectedIndex($index)">{{ render({ value: match }) }}<a class="delete" ng-if="suggestionIsDeletable({ value: match })" ng-click="doDeleteSuggestion(match, $event)">Delete</a></li>' +
+                '        ng-mousemove="setSelectedIndex($index)">{{ render({ value: match }) }}<a class="delete" href="javascript:void(0)" ng-if="suggestionIsDeletable({ value: match })">Delete</a></li>' +
                 '  </ul>' +
                 '</div>';
 
@@ -77,15 +77,13 @@
                         return scope.matches.length > 0;
                     };
 
-                    scope.doDeleteSuggestion = function(match, evt) {
-                        scope.deleteSuggestion({ value: match });
-                        evt.preventDefault();
-                    };
-
                     scope.handleSelect = function (selectedIndex, evt) {
                         // don't do selection on delete
-                        if (evt.target.className !== 'delete') {
+                        if (!evt.target.classList.contains('delete')) {
                             select(selectedIndex);
+                        } else {
+                            scope.deleteSuggestion({ value: scope.matches[selectedIndex] });
+                            evt.preventDefault();
                         }
                     };
 
