@@ -83,6 +83,7 @@
                             select(selectedIndex);
                         } else {
                             scope.deleteSuggestion({ value: scope.matches[selectedIndex] });
+                            scope.matches.splice(selectedIndex, 1);
                             evt.preventDefault();
                         }
                     };
