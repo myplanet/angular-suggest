@@ -22,14 +22,14 @@
             $window.document.createElement('autocomplete');
 
             var TEMPLATE = '' +
-                '<div class="angular-autocomplete" ng-show="isOpen()">' +
+                '<div class="angular-autocomplete" ng-if="isOpen()">' +
                 '  <ul class="_suggestions">' +
                 '    <li ng-repeat="match in matches" ' +
                 '        class="_suggestion"' +
                 '        ng-class="{ \'-selected\': selectedIndex == $index }" ' +
                 // use mousedown to stay clear of input losing focus when suggestion is clicked
-                '        ng-mousedown="select($index)" ' +
-                '        ng-mousemove="setSelectedIndex($index)">{{ render({ value: match }) }}</li>' +
+                '        ng-mousedown="handleSelect($index, $event)" ' +
+                '        ng-mousemove="setSelectedIndex($index)">{{ render({ value: match }) }}<a class="delete" ng-if="suggestionIsDeletable({ value: match })" ng-click="doDeleteSuggestion(match, $event)">Delete</a></li>' +
                 '  </ul>' +
                 '</div>';
 
@@ -49,7 +49,9 @@
                     inputElement: '=',
                     onSelectionComplete: '&',
                     render: '&',
-                    query: '&'
+                    query: '&',
+                    deleteSuggestion: '&',
+                    suggestionIsDeletable: '&'
                 },
 
                 link: function (scope, element, attributes) {
@@ -61,11 +63,7 @@
                         scope.selectedIndex = -1;
                     };
 
-                    scope.isOpen = function () {
-                        return scope.matches.length > 0;
-                    };
-
-                    scope.select = function (selectedIndex) {
+                    function select(selectedIndex) {
                         // called from within the $digest() cycle
                         var selectedValue = scope.matches[selectedIndex];
 
@@ -73,6 +71,22 @@
 
                         // notify observer of selection complete
                         scope.onSelectionComplete({ value: selectedValue });
+                    };
+
+                    scope.isOpen = function () {
+                        return scope.matches.length > 0;
+                    };
+
+                    scope.doDeleteSuggestion = function(match, evt) {
+                        scope.deleteSuggestion({ value: match });
+                        evt.preventDefault();
+                    };
+
+                    scope.handleSelect = function (selectedIndex, evt) {
+                        // don't do selection on delete
+                        if (evt.target.className !== 'delete') {
+                            select(selectedIndex);
+                        }
                     };
 
                     scope.selectNext = function () {
@@ -148,7 +162,7 @@
                             } else if (evt.which === 38) { // Up Arrow
                                 scope.selectPrev();
                             } else if (evt.which === 13 || evt.which === 9) { // Enter or Tab
-                                scope.select(scope.selectedIndex);
+                                select(scope.selectedIndex);
                             } else if (evt.which === 27) { // Esc
                                 // 5. Handle cancelling of the dialog
                                 resetMatches();
