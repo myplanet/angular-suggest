@@ -5,7 +5,6 @@
     display: inline-block;
     background: #fff;
     min-width: 100%;
-    max-width: 100%;
 }
 
 .angular-autocomplete:focus {
@@ -19,8 +18,13 @@
 }
 
 .angular-autocomplete > ._suggestions > ._suggestion {
-    padding: 10px 15px;
+    padding: 10px 70px 10px 15px;
     cursor: pointer;
+}
+
+.angular-autocomplete > ._suggestions > ._suggestion > a.delete {
+    position: absolute;
+    right: 15px;
 }
 
 .angular-autocomplete > ._suggestions > ._suggestion.-selected {
