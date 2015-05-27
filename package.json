@@ -1,0 +1,21 @@
+{
+  "name": "angular-suggest",
+  "version": "0.0.0",
+  "description": "Lightweight autocomplete suggestions for AngularJS",
+  "main": "angular-suggest.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/myplanet/angular-suggest.git"
+  },
+  "keywords": [
+    "angular",
+    "autocomplete",
+    "suggestion"
+  ],
+  "author": "Shanly Suepaul <shanly.s@myplanet.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/myplanet/angular-suggest/issues"
+  },
+  "homepage": "https://github.com/myplanet/angular-suggest"
+}
