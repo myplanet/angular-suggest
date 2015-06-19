@@ -1,7 +1,9 @@
 {
   "name": "angular-suggest",
-  "main": "angular-suggest.js",
-  "version": "0.0.2",
+  "main": [
+    "angular-suggest.js",
+    "angular-suggest.css"
+  ],
   "homepage": "https://github.com/myplanet/angular-suggest",
   "authors": [
     "Shanly Suepaul <shanly.s@myplanet.com>",
